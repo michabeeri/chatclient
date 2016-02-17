@@ -40,7 +40,7 @@
 
     const root = document.getElementById('root');
     const msgs = [];
-    const chatClient = new ChatClient('http://localhost');
+    const chatClient = new ChatClient('http://localhost:8080');
     chatClient.onConnect = () => {
         chatClient.login('Dan');
         render(msgs, chatClient, root);
