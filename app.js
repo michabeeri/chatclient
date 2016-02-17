@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var DEFAULT_PORT = 80;
+var DEFAULT_PORT = 8080;
 
 var program = require('commander');
 var app = require('http').createServer(handler);
