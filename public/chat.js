@@ -33,8 +33,8 @@ var Login = React.createClass({
 var Chat = React.createClass({
     getInitialState: function () {
         return {
-            username: 'Dani', // this,props.username
-            activeUser: 'Roi',
+            username: 'Shaul', // this,props.username
+            activeUser: null,
             connectedUsers: [],
             messages: []
         };
@@ -77,8 +77,8 @@ var ChatSection = React.createClass({
     render: function () {
         return (
             <div>
-                <div>{this.props.activeUser}</div>
-                <ChatWindow messages={this.props.messages} />
+                <div>{this.props.activeUser ? this.props.activeUser.name : 'All'}</div>
+                <ChatWindow messages={this.props.messages} activeUser={this.props.activeUser}/>
                 <ChatControls addMessage={this.props.addMessage}/>
             </div>
         );
@@ -87,10 +87,18 @@ var ChatSection = React.createClass({
 
 var ChatWindow = React.createClass({
     render: function () {
+        var messages = this.props.activeUser
+            ? _.filter(this.props.messages, msg => {
+                console.log(msg);
+                console.log(this.props.activeUser);
+                return msg.from.name === this.props.activeUser.name && msg.personal;
+            })
+            : this.props.messages;
+
         return (
             <ul>
                 {
-                    _.map(this.props.messages, msg => <ChatMessage message={msg}/>)
+                    _.map(messages, msg => <ChatMessage message={msg}/>)
                 }
             </ul>
         );
@@ -129,6 +137,7 @@ var ConnectedUsers = React.createClass({
                     {
                         _.map(this.props.users, user => <User userData={user} setActiveUser={this.props.setActiveUser}/>)
                     }
+                    <User userData={null} setActiveUser={this.props.setActiveUser}/>
                 </ul>
             </div>
         );
@@ -137,9 +146,10 @@ var ConnectedUsers = React.createClass({
 
 var User = React.createClass({
     render: function () {
+        var userData = this.props.userData;
         return (
-            <li key={this.props.userData.id}>
-                <button onClick={() => this.props.setActiveUser(this.props.userData)}>{this.props.userData.name}</button>
+            <li key={userData ? userData.id : '0000000'}>
+                <button onClick={() => this.props.setActiveUser(userData)}>{userData ? userData.name : 'All'}</button>
             </li>
         );
     }
