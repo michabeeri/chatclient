@@ -1,7 +1,3 @@
-/**
- * Created by Dan_Shappir on 7/19/15.
- */
-
 var {Router, Route, Link} = ReactRouter;
 
 var App = React.createClass({
@@ -9,39 +5,44 @@ var App = React.createClass({
     render: function () {
         return (
             <Router>
-                <Route path="/" component={Login} />
-                <Route path="/chat" component={Chat} />
+                <Route name="login" path="/" component={Login} />
+                <Route name="chat" path="/chat/:username" component={Chat} />
             </Router>
         );
     }
 });
 
 var Login = React.createClass({
-    getUsername(){
-        return this.refs.input.value;
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function () {
+        return {
+            username: ''
+        };
     },
     render () {
         return (
             <div>
-                <input type="text" placeholder="username" ref="input"/>
-                <Link to="/chat" username={this.getUsername()}>Login</Link>
+                <input type="text" placeholder="username" valueLink={this.linkState("username")}/>
+                <Link to={"/chat/" + this.state.username}>Login</Link>
             </div>
         );
     }
 });
 
 var Chat = React.createClass({
+    mixins:[ReactRouter.History],
     getInitialState: function () {
         return {
-            username: 'Shaul', // this,props.username
+            username: this.props.routeParams.username,
             activeUser: null,
             connectedUsers: [],
             messages: []
         };
     },
-    componentWillMount(){
+    componentDidMount(){
         this.chatClient = new ChatClient('http://localhost:8080');
         this.chatClient.onConnect = () => {
+            console.log(this.state.username);
             this.chatClient.login(this.state.username);
         };
         this.chatClient.onUpdate = clients => {
@@ -57,15 +58,22 @@ var Chat = React.createClass({
         };
     },
     addMessage(message){
-        this.chatClient.send(message);
+        this.chatClient.send(message, this.state.activeUser);
     },
     setActiveUser(userData){
         this.setState({activeUser: userData});
     },
+    logout(){
+        this.chatClient.logout();
+        this.chatClient.onConnect = null;
+        this.chatClient.onUpdate = null;
+        this.chatClient.onMessage = null;
+        this.history.push('/');
+    },
     render: function () {
         return (
             <div>
-                <Link to="/">Logout</Link>
+                <button onClick={this.logout}>Logout</button>
                 <ChatSection messages={this.state.messages} activeUser={this.state.activeUser} addMessage={this.addMessage}/>
                 <ConnectedUsers users={this.state.connectedUsers} setActiveUser={this.setActiveUser}/>
             </div>
@@ -109,7 +117,7 @@ var ChatMessage = React.createClass({
     render: function () {
         var message = this.props.message;
         return (
-            <li><strong>{message.from.name}:</strong>{message.message}</li>
+            <li style={{color: message.personal ? 'blue' : 'black'}}><strong>{message.from.name} :</strong>{message.message}</li>
         );
     }
 })
@@ -156,55 +164,3 @@ var User = React.createClass({
 });
 
 ReactDOM.render(<App />, document.getElementById('root'));
-
-
-//(function () {
-//    'use strict';
-//
-//    const render = (msgs, chatClient, root) => ReactDOM.render(<Chat msgs={msgs} send={chatClient.send}/>, root);
-//
-//    const Chat = ({msgs, send}) =>
-//        <div className='chat'>
-//            <Output msgs={msgs}/>
-//            <Input send={send}/>
-//        </div>;
-//    Chat.displayName = 'Chat';
-//
-//    const Output = ({msgs}) =>
-//        <div className='output'>{
-//            msgs.map(({from, msg}, i) => <OutputItem key={i} name={from.name} msg={msg}/>)
-//        }</div>;
-//    Output.displayName = 'Output';
-//
-//    const OutputItem = ({name, msg}) => <div><b>{name}:</b> {msg}</div>
-//    OutputItem.displayName = 'OutputItem';
-//
-//    class Input extends React.Component {
-//        _send() {
-//            const textarea = this.refs.input;
-//            const {value} = textarea;
-//            textarea.value = '';
-//            this.props.send(value);
-//        }
-//
-//        render() {
-//            return <div className='input'>
-//                <textarea ref='input'/>
-//                <button onClick={this._send.bind(this)}>Send</button>
-//            </div>;
-//        }
-//    }
-//    Input.displayName = 'Input';
-//
-//    const root = document.getElementById('root');
-//    const msgs = [];
-//    const chatClient = new ChatClient('http://localhost:8080');
-//    chatClient.onConnect = () => {
-//        chatClient.login('Dan');
-//        render(msgs, chatClient, root);
-//    };
-//    chatClient.onMessage = (from, msg) => {
-//        msgs.push({from, msg});
-//        render(msgs, chatClient, root);
-//    };
-//}());
