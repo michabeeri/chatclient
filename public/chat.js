@@ -40,7 +40,7 @@ var Chat = React.createClass({
         };
     },
     componentDidMount(){
-        this.chatClient = new ChatClient('http://localhost:8080'); //this.chatClient = new ChatClient('http://localhost:8080');//
+        this.chatClient = new ChatClient('http://chatroom-59271.onmodulus.net'); //this.chatClient = new ChatClient('http://localhost:8080');//
         this.chatClient.onConnect = id => {
             var user = {id: id, name: this.props.routeParams.username};
             console.log(user);
