@@ -33,7 +33,7 @@ var Chat = React.createClass({
     mixins:[ReactRouter.History],
     getInitialState: function () {
         return {
-            username: this.props.routeParams.username,
+            user: null,
             activeUser: null,
             connectedUsers: [],
             messages: []
@@ -41,9 +41,11 @@ var Chat = React.createClass({
     },
     componentDidMount(){
         this.chatClient = new ChatClient('http://localhost:8080');
-        this.chatClient.onConnect = () => {
-            console.log(this.state.username);
-            this.chatClient.login(this.state.username);
+        this.chatClient.onConnect = id => {
+            var user = {id: id, name: this.props.routeParams.username};
+            console.log(user);
+            this.chatClient.login(user.name);
+            this.setState({user: user});
         };
         this.chatClient.onUpdate = clients => {
             console.log(clients);
@@ -53,12 +55,24 @@ var Chat = React.createClass({
             console.log(from);
             console.log(message);
             console.log(personal);
-            this.state.messages.push({from:from, message:message, personal:personal});
+            this.state.messages.push({
+                id:_.uniqueId(),
+                from:from,
+                message:message,
+                to: personal ? this.state.user : null
+            });
             this.setState({messages: this.state.messages});
         };
     },
     addMessage(message){
         this.chatClient.send(message, this.state.activeUser);
+        this.state.messages.push({
+            id:_.uniqueId(),
+            from:this.state.user,
+            message:message,
+            to: this.state.activeUser
+        });
+        this.setState({messages: this.state.messages});
     },
     setActiveUser(userData){
         this.setState({activeUser: userData});
@@ -74,7 +88,7 @@ var Chat = React.createClass({
         return (
             <div>
                 <button onClick={this.logout}>Logout</button>
-                <ChatSection messages={this.state.messages} activeUser={this.state.activeUser} addMessage={this.addMessage}/>
+                <ChatSection messages={this.state.messages} activeUser={this.state.activeUser} user={this.state.user} addMessage={this.addMessage}/>
                 <ConnectedUsers users={this.state.connectedUsers} setActiveUser={this.setActiveUser}/>
             </div>
         );
@@ -86,7 +100,7 @@ var ChatSection = React.createClass({
         return (
             <div>
                 <div>{this.props.activeUser ? this.props.activeUser.name : 'All'}</div>
-                <ChatWindow messages={this.props.messages} activeUser={this.props.activeUser}/>
+                <ChatWindow messages={this.props.messages} activeUser={this.props.activeUser} user={this.props.user}/>
                 <ChatControls addMessage={this.props.addMessage}/>
             </div>
         );
@@ -99,7 +113,8 @@ var ChatWindow = React.createClass({
             ? _.filter(this.props.messages, msg => {
                 console.log(msg);
                 console.log(this.props.activeUser);
-                return msg.from.name === this.props.activeUser.name && msg.personal;
+                return (msg.from.name === this.props.activeUser.name && msg.to) ||
+                    (msg.from.name === this.props.user.name && msg.to && msg.to.name === this.props.activeUser.name);
             })
             : this.props.messages;
 
@@ -117,7 +132,7 @@ var ChatMessage = React.createClass({
     render: function () {
         var message = this.props.message;
         return (
-            <li style={{color: message.personal ? 'blue' : 'black'}}><strong>{message.from.name} :</strong>{message.message}</li>
+            <li><strong>{message.from.name} :</strong>{message.message}</li>
         );
     }
 })
