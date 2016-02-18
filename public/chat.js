@@ -103,7 +103,7 @@ var ChatSection = React.createClass({
     render: function () {
         return (
             <div className="chat-section">
-                <div>{this.props.activeUser ? this.props.activeUser.name : 'All'}</div>
+                <div>Chat With: {this.props.activeUser ? this.props.activeUser.name : 'All'}</div>
                 <ChatWindow messages={this.props.messages} activeUser={this.props.activeUser} user={this.props.user}/>
                 <ChatControls addMessage={this.props.addMessage}/>
             </div>
@@ -159,7 +159,7 @@ var ConnectedUsers = React.createClass({
     render: function () {
         return (
             <div className="connected-users-section">
-                <div>Users:</div>
+                <div className="title">Users:</div>
                 <div className="connected-users">
                     <ul>
                         {
@@ -181,8 +181,9 @@ var User = React.createClass({
     render: function () {
         var userData = this.props.userData;
         return (
-            <li className={this.props.selected ? "selected" : ""} key={userData ? userData.id : '0000000'}>
-                <button onClick={() => this.props.setActiveUser(userData)}>{userData ? userData.name : 'All'}</button>
+            <li className={this.props.selected ? "selected" : ""} key={userData ? userData.id : '0000000'}
+                onClick={() => this.props.setActiveUser(userData)}>
+                {userData ? userData.name : 'All'}
             </li>
         );
     }

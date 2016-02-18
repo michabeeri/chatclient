@@ -70,6 +70,7 @@ body {
   border: solid 1px black;
   overflow: auto;
   background-color: #f5f5f5;
+  min-width: 100px;
 
   flex: 1 1 auto;
   -webkit-flex: 1 1 auto;
@@ -77,12 +78,16 @@ body {
 
 .connected-users ul {
   list-style-type: none;
-  padding: 0 0 0 10px;
+  padding: 5px;
 }
 
 .connected-users-section {
   display: flex;
   flex-direction: column;
+}
+
+.connected-users-section .title {
+  padding-left: 10px;
 }
 
 .selected {
