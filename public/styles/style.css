@@ -2,6 +2,7 @@ body {
   background-color: #FFFDFA;
   max-width: 720px;
   margin: auto;
+  font-family: 'Arvo', serif;;
 }
 
 .chat-app {
@@ -78,6 +79,11 @@ body {
 
 .connected-users ul {
   list-style-type: none;
+  padding: 2px;
+  margin: 0;
+}
+
+.connected-users ul li {
   padding: 5px;
 }
 
