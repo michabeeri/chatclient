@@ -40,7 +40,7 @@ var Chat = React.createClass({
         };
     },
     componentDidMount(){
-        this.chatClient = new ChatClient('http://chatroom-59271.onmodulus.net'); //this.chatClient = new ChatClient('http://localhost:8080');//
+        this.chatClient = new ChatClient('http://localhost:8080');//new ChatClient('http://chatroom-59271.onmodulus.net');
         this.chatClient.onConnect = id => {
             var user = {id: id, name: this.props.routeParams.username};
             console.log("onConnect, username: ", user);
@@ -176,7 +176,6 @@ var ConnectedUsers = React.createClass({
                             _.map(users,
                                 user => <User key={user.id} userData={user} selected={user === this.props.activeUser}
                                               setActiveUser={this.props.setActiveUser}/>)
-
                         }
                     </ul>
                 </div>
