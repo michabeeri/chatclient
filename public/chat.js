@@ -87,7 +87,7 @@ var Chat = React.createClass({
     render: function () {
         return (
             <div>
-                <button onClick={this.logout}>Logout</button>
+                <button className="logout" onClick={this.logout}>Logout</button>
                 <div className="chat-app">
                     <ChatSection messages={this.state.messages} activeUser={this.state.activeUser}
                                  user={this.state.user} addMessage={this.addMessage}/>
@@ -144,11 +144,17 @@ var ChatMessage = React.createClass({
 var ChatControls = React.createClass({
     clickHandler(){
         this.props.addMessage(this.refs.input.value);
+        this.refs.input.value = '';
+    },
+    onKeypress(event) {
+        if (event.keyCode === 13) {
+            this.clickHandler();
+        }
     },
     render: function () {
         return (
             <div className="chat-controls">
-                <input type="text" placeholder="Enter your message here." ref="input"/>
+                <input type="text" placeholder="Enter your message here." ref="input" onKeyDown={this.onKeypress}/>
                 <button onClick={this.clickHandler}>Send</button>
             </div>
         );
