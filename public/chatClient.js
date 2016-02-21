@@ -1,5 +1,4 @@
-define(['react-with-addons', 'react-dom', 'react-router', 'lodash', 'jquery'],
-    function(React, ReactDOM, ReactRouter, _, $) {
+define(['socket-io'], function(io) {
 
     function ChatClient(url) {
         'use strict';
@@ -48,4 +47,6 @@ define(['react-with-addons', 'react-dom', 'react-router', 'lodash', 'jquery'],
                 }
             });
     }
+
+    return ChatClient;
 });

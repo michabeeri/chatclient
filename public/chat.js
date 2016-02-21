@@ -1,36 +1,5 @@
-define(['react-with-addons', 'react-dom', 'react-router', 'lodash', 'jquery'],
-    function(React, ReactDOM, ReactRouter, _, $) {
-
-    var {Router, Route, Link} = ReactRouter;
-
-    var App = React.createClass({
-        displayName: 'App',
-        render: function () {
-            return (
-                <Router>
-                    <Route name="login" path="/" component={Login}/>
-                    <Route name="chat" path="/chat/:username" component={Chat}/>
-                </Router>
-            );
-        }
-    });
-
-    var Login = React.createClass({
-        mixins: [React.addons.LinkedStateMixin],
-        getInitialState: function () {
-            return {
-                username: ''
-            };
-        },
-        render () {
-            return (
-                <div>
-                    <input type="text" placeholder="username" valueLink={this.linkState("username")}/>
-                    <Link to={"/chat/" + this.state.username}>Login</Link>
-                </div>
-            );
-        }
-    });
+define(['react', 'react-router', 'lodash', 'chatClient'],
+    function(React, ReactRouter, _, ChatClient) {
 
     var Chat = React.createClass({
         mixins: [ReactRouter.History],
@@ -199,5 +168,5 @@ define(['react-with-addons', 'react-dom', 'react-router', 'lodash', 'jquery'],
         }
     });
 
-    ReactDOM.render(<App />, document.getElementById('root'));
+    return Chat;
 });
