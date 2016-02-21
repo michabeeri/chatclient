@@ -1,5 +1,5 @@
 body {
-  background-color: #FFFDFA;
+  background-color: #C2DAE8;
   max-width: 720px;
   margin: auto;
   font-family: 'Arvo', serif;;
@@ -29,6 +29,7 @@ body {
   margin: 0;
   padding: 0;
   list-style-type: none;
+  background-color: #f5f5f5;
 }
 
 .chat-section ul li {
@@ -61,7 +62,7 @@ body {
 
 .chat-controls button:hover {
   background-color: #333333;
-  color: #F5EFEF;
+  color: #f5efef;
 }
 
 .connected-users {
@@ -87,6 +88,10 @@ body {
   padding: 5px;
 }
 
+.connected-users ul li:hover {
+  cursor: pointer;
+}
+
 .connected-users-section {
   display: flex;
   flex-direction: column;
@@ -97,6 +102,24 @@ body {
 }
 
 .selected {
-  color: #F5EFEF;
+  color: #f5efef;
   background-color: #828282;
+}
+
+.logout {
+  background: -webkit-linear-gradient(top, #00a0d1 0%, #008db8 100%);
+  background: linear-gradient(top, #00a0d1 0%, #008db8 100%);
+  padding: 5px 15px;
+  border-radius: 15px;
+  border: 1px solid #095b7e;
+  color: #cfebf3;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  margin: 3px;
+}
+
+.logout:hover {
+  color: #333333;
+  background: -webkit-linear-gradient(top, #EEF2F3 0%, #BBC8CC 100%);
+  cursor: pointer;
 }
