@@ -43,13 +43,14 @@ var Chat = React.createClass({
         this.chatClient = new ChatClient('http://localhost:8080'); //this.chatClient = new ChatClient('http://localhost:8080');//
         this.chatClient.onConnect = id => {
             var user = {id: id, name: this.props.routeParams.username};
-            console.log(user);
+            console.log("onConnect, username: ", user);
             this.chatClient.login(user.name);
             this.setState({user: user});
         };
         this.chatClient.onUpdate = clients => {
-            console.log(clients);
-            this.setState({connectedUsers: clients});
+            console.log("onUpdate: ", clients);
+            var users = _.filter(clients, user => user.id !== this.state.user.id);
+            this.setState({connectedUsers: users});
         };
         this.chatClient.onMessage = (from, message, personal) => {
             console.log(from);
@@ -92,7 +93,7 @@ var Chat = React.createClass({
                     <ChatSection messages={this.state.messages} activeUser={this.state.activeUser}
                                  user={this.state.user} addMessage={this.addMessage}/>
                     <ConnectedUsers users={this.state.connectedUsers} activeUser={this.state.activeUser}
-                                    setActiveUser={this.setActiveUser}/>
+                                    setActiveUser={this.setActiveUser} user={this.state.user} />
                 </div>
             </div>
         );
@@ -163,19 +164,20 @@ var ChatControls = React.createClass({
 
 var ConnectedUsers = React.createClass({
     render: function () {
+        var users = this.props.users;
         return (
             <div className="connected-users-section">
                 <div className="title">Users:</div>
                 <div className="connected-users">
                     <ul>
+                        <User userData={null} selected={!this.props.activeUser}
+                              setActiveUser={this.props.setActiveUser}/>
                         {
-                            _.map(this.props.users,
+                            _.map(users,
                                 user => <User key={user.id} userData={user} selected={user === this.props.activeUser}
                                               setActiveUser={this.props.setActiveUser}/>)
 
                         }
-                        <User userData={null} selected={!this.props.activeUser}
-                              setActiveUser={this.props.setActiveUser}/>
                     </ul>
                 </div>
             </div>

@@ -88,6 +88,10 @@ body {
   padding: 5px;
 }
 
+.connected-users ul li:hover {
+  cursor: pointer;
+}
+
 .connected-users-section {
   display: flex;
   flex-direction: column;
